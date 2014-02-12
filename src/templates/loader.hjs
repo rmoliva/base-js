@@ -1,0 +1,11 @@
+<div class='avatar_loader'>
+  
+  <div class='avatar_dial_div'>
+    <input class='dial loader_progress' type="text" readonly="readonly" data-readOnly=true/>
+  </div>
+  
+  <div class='avatar_name_div'>
+    Loading: <span class='loader_name' /> <span class='loader_loaded' />/<span class='loader_total' />
+  </div>
+  
+</div>
