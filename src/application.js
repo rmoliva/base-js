@@ -41,17 +41,10 @@ BaseJS.app = (function() {
     // Inicializar modulos
     BaseJS.modules.init.initialize(core);
 
-    // Inicializar el loader
-    core.start("loader", {
-        options: options
-      },
-      _.bind(onLoadedMedia)
-    );
-  };
+    BaseJS.promises.moduleStart(core, "loader", options).then(function() {
+      return BaseJS.promises.moduleStop(core, "loader");
+    }).done();
 
-  var onLoadedMedia = function() {
-    // Parar el loader
-    core.stop("loader");
   };
 
   return {

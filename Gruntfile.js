@@ -10,6 +10,7 @@ module.exports = function(grunt) {
      "src/modules/loader/module.js",
      "src/modules/init.js",
      "src/media.js",
+     "src/promises.js",
      "src/application.js",
    ];
   

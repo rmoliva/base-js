@@ -59,7 +59,7 @@ BaseJS.modules.loader.Module = function(sb) {
 
   var initialize = function(opts, done) {
     $el = $(opts.el);
-    
+
     var default_dirs = {
       images: '../assets/',
       sounds: '../assets/',
@@ -98,7 +98,7 @@ BaseJS.modules.loader.Module = function(sb) {
     $('.loader_name').html(data.name);
     $('.loader_loaded').html(data.loaded);
     $('.loader_total').html(data.total);
-//    $('.loader_progress').val(progress);
+    //    $('.loader_progress').val(progress);
     $('.loader_progress').trigger('change');
   };
 
@@ -233,7 +233,7 @@ BaseJS.media = (function() {
    */
   var loadMedia = function(core, options) {
     var media_hash = allMedia(options);
-    
+
 
     // cargar el motor de sonidos
     // sound_object = new SoundLibrary.Tablet(core.browser.is_tablet());
@@ -243,38 +243,38 @@ BaseJS.media = (function() {
 
     // Notificar progreso de carga
     publishProgress(core);
-    
+
     loadImages(core, media_hash.images).then(
       loadFonts(core, fonts)
     ).done(options.callback);
-    
-//      // loadSounds(core, media_hash.sounds),
-    
-//    loadImages(core, media_hash.images)., function() {
-//      if (!_.isEmpty(media_hash.images)) {
-//        console.log("Cargadas imagenes: " + Object.keys(media_hash.images).join(', '));
-//      }
 
-      // Cargar ahora las fuentes
-//      loadFonts(core, fonts, options.callback);
+    //      // loadSounds(core, media_hash.sounds),
 
-      // Cargar ahora los sonidos
-      /* loadSounds(core, media_hash.sounds, function() {
+    //    loadImages(core, media_hash.images)., function() {
+    //      if (!_.isEmpty(media_hash.images)) {
+    //        console.log("Cargadas imagenes: " + Object.keys(media_hash.images).join(', '));
+    //      }
+
+    // Cargar ahora las fuentes
+    //      loadFonts(core, fonts, options.callback);
+
+    // Cargar ahora los sonidos
+    /* loadSounds(core, media_hash.sounds, function() {
         // Cargar ahora las fuentes
         loadFonts(core, fonts, result);
       }); */
-//    });
+    //    });
   };
-  
+
   var loadImagePromise = function(core, key, url) {
-    return new Promise(function (resolve, reject) {
+    return new Promise(function(resolve, reject) {
       var image = new Image();
       image.onload = function(e) {
         loaded = loaded + 1;
-  
+
         // Notificar del progreso
         publishProgress(core, url);
-     
+
         // Guardar el tamaño de las imagenes
         var size = {
           w: this.width,
@@ -288,16 +288,16 @@ BaseJS.media = (function() {
       image.src = url;
       return image;
     });
-  }
-  
+  };
+
   var loadImages = function(core, images_hash) {
     // Hay que cargar todas las imagenes
     var p = [];
-    
-    p = _.map(images_hash, function(url, key){
-      return loadImagePromise(core, key, url)
+
+    p = _.map(images_hash, function(url, key) {
+      return loadImagePromise(core, key, url);
     });
-    
+
     return Promise.all(p);
   };
 
@@ -316,7 +316,7 @@ BaseJS.media = (function() {
   };
 */
   var loadFonts = function(core, families_array, result) {
-    return new Promise(function (resolve, reject) {
+    return new Promise(function(resolve, reject) {
       WebFont.load({
         google: {
           families: families_array
@@ -378,6 +378,43 @@ BaseJS.media = (function() {
 })();
 ;NS("BaseJS");
 
+
+BaseJS.promises = (function() {
+
+  var moduleStart = function(core, module, options) {
+    return new Promise(function(resolve, error) {
+      core.start(module, {
+          options: options
+        },
+        resolve
+      );
+    });
+  };
+
+  var moduleStop = function(core, module) {
+    return new Promise(function(resolve, error) {
+      core.stop(module, function() {
+        resolve();
+      });
+    });
+  };
+
+  var timeout = function(secs) {
+    return new Promise(function(resolve, reject) {
+      setTimeout(function() {
+        resolve();
+      }, secs * 1000);
+    });
+  };
+
+  return {
+    moduleStart: moduleStart,
+    moduleStop: moduleStop,
+    timeout: timeout
+  };
+}());
+;NS("BaseJS");
+
 (function() {
   'use strict';
   scaleApp.Core.prototype.log = {
@@ -419,17 +456,10 @@ BaseJS.app = (function() {
     // Inicializar modulos
     BaseJS.modules.init.initialize(core);
 
-    // Inicializar el loader
-    core.start("loader", {
-        options: options
-      }, 
-      _.bind(onLoadedMedia)
-    );
-  };
+    BaseJS.promises.moduleStart(core, "loader", options).then(function() {
+      return BaseJS.promises.moduleStop(core, "loader");
+    }).done();
 
-  var onLoadedMedia = function() {
-    // Parar el loader
-    core.stop("loader");
   };
 
   return {
