@@ -1,4 +1,158 @@
-NS('BaseJS.media');
+/*! js-base - v0.0.1 - 2014-11-15 */NS('BaseJS.corePlugins');
+
+BaseJS.corePlugins.ScaleAppMedia = function(core, options) {
+    'use strict';
+
+    /* Inicializar el plugin
+     */
+    var onPluginInit = function(instanceSandbox, options) {};
+
+    /* Liberar medios
+     */
+    var onPluginDestroy = function() {};
+
+    // Extender el core
+    _.extend(core, {
+        media: BaseJS.media
+    }, this);
+
+    // Extender el sandbox
+    _.extend(core.Sandbox.prototype, {
+        media: BaseJS.media
+    }, this);
+
+    return {
+        init: onPluginInit,
+        destroy: onPluginDestroy
+    };
+};
+;NS('BaseJS.corePlugins');
+
+BaseJS.corePlugins.init = (function() {
+    'use strict';
+
+    var initialize = function(core) {
+        core.use(BaseJS.corePlugins.ScaleAppMedia);
+
+    };
+
+    return {
+        initialize: initialize
+    };
+})();
+;this["JST"] = this["JST"] || {};
+
+this["JST"]["avatar/templates/loader.hjs"] = Handlebars.template(function(Handlebars, depth0, helpers, partials, data) {
+    this.compilerInfo = [4, '>= 1.0.0'];
+    helpers = this.merge(helpers, Handlebars.helpers);
+    data = data || {};
+
+
+
+    return "<div class='avatar_loader'>\n  \n  <div class='avatar_dial_div'>\n    <input class='dial loader_progress' type=\"text\" readonly=\"readonly\" data-readOnly=true/>\n  </div>\n  \n  <div class='avatar_name_div'>\n    Loading: <span class='loader_name' /> <span class='loader_loaded' />/<span class='loader_total' />\n  </div>\n  \n</div>\n";
+});
+;NS('BaseJS.modules.loader');
+
+BaseJS.modules.loader.Module = function(sb) {
+    'use strict';
+
+    var $el = null;
+    var template = 'avatar/templates/loader.hjs';
+
+    var initialize = function(opts, done) {
+        $el = $(opts.el);
+
+        var default_dirs = {
+            images: '../assets/',
+            sounds: '../assets/',
+            videos: '../assets/'
+        }, images = {};
+
+        // Renderizar la plantilla de handlebars
+        var html = JST[template]();
+        $el.html(html);
+
+        // Subscribirse a la carga
+        sb.on("media.progress", _.bind(onMediaProgress));
+
+        sb.media.loadMedia(sb, {
+            assets: {
+                images: images,
+                sounds: {},
+                videos: {}
+            },
+            dirs: _.merge(default_dirs, opts.asset_dirs),
+            level: opts.level,
+            callback: _.bind(done)
+        });
+    };
+
+    /* {
+      total: total,
+      loaded: loaded,
+      progress: (loaded * 100) / total,
+      name: name      
+    }
+    */
+    var onMediaProgress = function(data, topic) {
+        var progress = parseInt(data.progress, 10);
+
+        $('.loader_name').html(data.name);
+        $('.loader_loaded').html(data.loaded);
+        $('.loader_total').html(data.total);
+        //    $('.loader_progress').val(progress);
+        $('.loader_progress').trigger('change');
+    };
+
+    var destroy = function() {
+        // Quitar la plantilla
+        $el.empty();
+    };
+
+    return {
+        init: initialize,
+        destroy: destroy
+    };
+};
+;NS('BaseJS.modules');
+
+BaseJS.modules.init = (function() {
+    'use strict';
+
+    var modules = {
+        loader: BaseJS.modules.loader.Module
+    };
+
+    /**
+     * Registra todos los módulos de la aplicación Configurations en scaleApp
+     */
+    var initialize = function(core) {
+        // Registrar los modulos en el application
+        _.each(modules, function(module, name) {
+            core.register(name, module);
+        });
+    };
+
+    /**
+     * Parar los modulos y desregistrar todos
+     */
+    var destroy = function(core) {
+        var running = core.lsInstances();
+
+        _.each(modules, function(module, name) {
+            // Si el modulo esta arrancado, pararlo
+            if (_.contains(running, name)) {
+                core.stop(name);
+            }
+        });
+    };
+
+    return {
+        initialize: initialize,
+        destroy: destroy
+    };
+})();
+;NS('BaseJS.media');
 
 BaseJS.media = (function() {
     "use strict";
@@ -222,5 +376,95 @@ BaseJS.media = (function() {
         //    getSound: getSound,
         getImages: getImages,
         destroy: destroy
+    };
+})();
+;NS("BaseJS");
+
+
+BaseJS.promises = (function() {
+
+    var moduleStart = function(core, module, options) {
+        return new Promise(function(resolve, error) {
+            core.start(module, {
+                    options: options
+                },
+                resolve
+            );
+        });
+    };
+
+    var moduleStop = function(core, module) {
+        return new Promise(function(resolve, error) {
+            core.stop(module, function() {
+                resolve();
+            });
+        });
+    };
+
+    var timeout = function(secs) {
+        return new Promise(function(resolve, reject) {
+            setTimeout(function() {
+                resolve();
+            }, secs * 1000);
+        });
+    };
+
+    return {
+        moduleStart: moduleStart,
+        moduleStop: moduleStop,
+        timeout: timeout
+    };
+}());
+;NS("BaseJS");
+
+(function() {
+    'use strict';
+    scaleApp.Core.prototype.log = {
+        error: function(exception) {
+            console.error(exception.message);
+        },
+        info: function(exception) {
+            console.info(exception.message);
+        },
+        warn: function(exception) {
+            console.warn(exception.message);
+        }
+    };
+})();
+
+
+BaseJS.app = (function() {
+    "use strict";
+
+    var core = null;
+    var options = null;
+
+    /* 
+     * Inicializa la aplicacion
+     * *options*:
+     *   *domid*: ID del elemento DOM donde se renderizara
+     *   *callback*: funcion que llamara la aplicación con la configuracion
+     *      cuando el proceso termine
+     */
+    var initialize = function(o) {
+        options = _.cloneDeep(o);
+
+        // inicializar el scaleApp
+        core = new scaleApp.Core();
+
+        // Inicializar los plugins del Core
+        BaseJS.corePlugins.init.initialize(core);
+
+        // Inicializar modulos
+        BaseJS.modules.init.initialize(core);
+
+        BaseJS.promises.moduleStart(core, "loader", options).then(function() {
+            return BaseJS.promises.moduleStop(core, "loader");
+        }).done();
+
+    };
+
+    return {
+        initialize: initialize
     };
 })();

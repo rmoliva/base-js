@@ -1,14 +1,20 @@
 {
-  "name": "js-base.js",
+  "name": "js-base",
   "version": "0.0.1",
   "devDependencies": {
     "grunt": "~0.4.1",
-    "grunt-contrib-jshint": "~0.6.0",
+    "grunt-bump-build-git": "^1.1.1",
+    "grunt-contrib-clean": "^0.6.0",
+    "grunt-contrib-concat": "^0.5.0",
+    "grunt-contrib-connect": "^0.9.0",
+    "grunt-contrib-copy": "^0.7.0",
+    "grunt-contrib-handlebars": "^0.9.1",
+    "grunt-contrib-jasmine": "^0.8.1",
+    "grunt-contrib-jshint": "^0.10.0",
+    "grunt-contrib-sass": "^0.8.1",
+    "grunt-contrib-uglify": "^0.6.0",
+    "grunt-contrib-watch": "^0.6.1",
     "grunt-jsbeautifier": "~0.1.10",
-    "grunt-contrib-jasmine": "~0.5.1",
-    "grunt-contrib-handlebars": "~0.5.10",
-    "grunt-contrib-concat": "~0.3.0",
-    "grunt-contrib-watch": "~0.5.3",
-    "grunt-contrib-uglify": "~0.3.2"
+    "grunt-ssh": "^0.12.0"
   }
 }

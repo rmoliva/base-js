@@ -1,0 +1,10 @@
+[
+  "src/core-plugins/scaleapp-media.js",
+  "src/core-plugins/init.js",
+  "src/templates/templates.js",
+  "src/modules/loader/module.js",
+  "src/modules/init.js",
+  "src/media.js",
+  "src/promises.js",
+  "src/application.js"
+]
