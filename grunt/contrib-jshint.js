@@ -42,7 +42,8 @@ module.exports = function(grunt) {
         "Html2Canvas": true,
         "Signal": true,
         "sprintf": true,
-        "BaseJS": true
+        "BaseJS": true,
+        "React": true
       }
     },
     with_debug: {

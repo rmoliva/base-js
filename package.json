@@ -1,8 +1,9 @@
 {
-  "name": "js-base",
+  "name": "base-js",
   "version": "0.0.1",
   "devDependencies": {
     "grunt": "~0.4.1",
+    "grunt-bower-task": "^0.4.0",
     "grunt-bump-build-git": "^1.1.1",
     "grunt-contrib-clean": "^0.6.0",
     "grunt-contrib-concat": "^0.5.0",
@@ -15,6 +16,7 @@
     "grunt-contrib-uglify": "^0.6.0",
     "grunt-contrib-watch": "^0.6.1",
     "grunt-jsbeautifier": "~0.1.10",
+    "grunt-react": "^0.10.0",
     "grunt-ssh": "^0.12.0"
   }
 }

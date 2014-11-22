@@ -9,7 +9,7 @@ module.exports = function(grunt) {
     },
     dist: {
       src: grunt.config("project_files"),
-      dest: 'dist/'+grunt.config.get('pkg').name+'.max.js'
+      dest: 'dist/'+grunt.config.get('pkg').name+'.js'
     }
   });
   

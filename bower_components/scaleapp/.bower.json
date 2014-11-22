@@ -1,0 +1,21 @@
+{
+  "name": "scaleapp",
+  "main": "./dist/scaleApp.js",
+  "ignore": [
+    "node_modules",
+    "components",
+    "bower_components",
+    "spec"
+  ],
+  "homepage": "https://github.com/flosse/scaleApp",
+  "version": "0.4.3",
+  "_release": "0.4.3",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.4.3",
+    "commit": "9d9001c5198c27130faec6fca34de21e9bc77808"
+  },
+  "_source": "git://github.com/flosse/scaleApp.git",
+  "_target": "*",
+  "_originalSource": "scaleapp"
+}

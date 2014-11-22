@@ -12,9 +12,9 @@ module.exports = function(grunt) {
   grunt.loadTasks('grunt');
 
   // Default task(s).
-  grunt.registerTask('default', ['jshint:all','jsbeautifier']);
-  grunt.registerTask('buildjs', ["clean:dist", "sass",'jsbeautifier', 'jshint:all', "concat:dist"]);
-  grunt.registerTask('buildjs:with_debug', ["clean:dist", "sass",'jsbeautifier', 'jshint:with_debug', "concat:dist"]);
+  grunt.registerTask('default', ["react", 'jshint:all','jsbeautifier']);
+  grunt.registerTask('buildjs', ["react", "clean:dist", "sass",'jsbeautifier', 'jshint:all', "concat:dist"]);
+  grunt.registerTask('buildjs:with_debug', ["react", "clean:dist", "sass",'jsbeautifier', 'jshint:with_debug', "concat:dist"]);
   
   grunt.registerTask('copy:'+grunt.config('pkg').name, ["copy:images", "copy:js_max", "copy:css"]);
   grunt.registerTask('deploy:'+grunt.config('pkg').name, function(commit_message) {

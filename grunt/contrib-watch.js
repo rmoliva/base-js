@@ -2,8 +2,8 @@ module.exports = function(grunt) {
   
   grunt.config('watch', {
     scripts: {
-      files: ['src/**/*.js','files.json','!src/templates/templates.js'],
-      tasks: ["clean:dist", 'jsbeautifier', 'jshint:with_debug', "concat:dist"],
+      files: ['src/**/*.js','src/components/**/*.jsx','files.json','!src/templates/**/*.js'],
+      tasks: ["react","clean:dist", 'jsbeautifier', 'jshint:with_debug', "concat:dist"],
       options: {
         spawn: false
       }
